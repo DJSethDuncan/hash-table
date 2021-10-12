@@ -35,15 +35,24 @@ class HashTable {
 
     add = (person) => {
         // @TODO - this overwrites -- handle chaining
-        this.hashArray[this.hashFunction(person.name)] = person
+        this.hashArray[this.hashFunction(person.name)] = {
+            [person.name]: {
+                age: person.age,
+                hobbies: person.hobbies
+            }
+        }
     }
 
-    delete = (string) => {
+    delete = (name) => {
+        delete this.hashArray[this.hashFunction(name)]
+    }
+
+    get = (name) => {
 
     }
 
-    get = (string) => {
-
+    dumpTable = () => {
+        console.log(this.hashArray)
     }
 
     hashFunction = (string) => {
@@ -55,14 +64,18 @@ class HashTable {
 }
 
 class Person {
-    constructor (name, age) {
+    constructor (name, age, hobbies) {
         this.name = name
         this.age = age
+        this.hobbies = hobbies
     }
 }
 
 let hashTable = new HashTable()
 
-let seth = new Person('Seth', 36)
+let seth = new Person('Seth', 36, ['code','music'])
 
 console.log(hashTable.add(seth))
+console.log(hashTable.dumpTable())
+console.log(hashTable.delete('seth'))
+console.log(hashTable.dumpTable())
