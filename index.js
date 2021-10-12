@@ -34,7 +34,6 @@ class HashTable {
     }
 
     add = (person) => {
-        // @TODO - this overwrites -- handle chaining
         let location = this.hashFunction(person.name)
         let personHashObject = {
             [person.name]: {
@@ -56,21 +55,28 @@ class HashTable {
     }
 
     delete = (name) => {
-        delete this.hashArray[this.hashFunction(name)]
+        let location = this.hashFunction(name)
+        if (typeof this.hashArray[location] !== 'undefined') {
+            for (let i = 0; i < this.hashArray[location].length; i++) {
+                const result = this.hashArray[this.hashFunction(name)][i]
+                if (Object.keys(result)[0].toLowerCase() === name.toLowerCase()) {
+                    delete this.hashArray[location][i]
+                    // @TODO - resize arrays
+                }
+            }
+        }
     }
 
     get = (name) => {
         const location = this.hashFunction(name)
         let response = 'nothing found'
-
         if (typeof this.hashArray[location] !== 'undefined') {
             for (let i = 0; i < this.hashArray[location].length; i++) {
                 const result = this.hashArray[this.hashFunction(name)][i]
-                if (Object.keys(result)[0].toLowerCase() === name.toLowerCase()) {
+                if (typeof result !== 'undefined' && Object.keys(result)[0].toLowerCase() === name.toLowerCase()) {
                     return result
                 }
             }
-
         }
         return response
     }
@@ -81,7 +87,7 @@ class HashTable {
 
     hashFunction = (string) => {
         const leftChar = string.charAt(0)
-        if (leftChar.match(/a-z/)) {
+        if (leftChar.match(/[A-Za-z]/g)) {
             return this.alphabetHash[leftChar.toLowerCase()]
         }
     }
@@ -106,6 +112,8 @@ hashTable.add(seth)
 hashTable.add(ben)
 hashTable.add(bob)
 
-// hashTable.dumpTable()
+hashTable.delete('bob')
 
 console.log(hashTable.get('ben'))
+
+hashTable.dumpTable()
