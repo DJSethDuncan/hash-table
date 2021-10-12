@@ -35,11 +35,23 @@ class HashTable {
 
     add = (person) => {
         // @TODO - this overwrites -- handle chaining
-        this.hashArray[this.hashFunction(person.name)] = {
+        let location = this.hashFunction(person.name)
+        let personHashObject = {
             [person.name]: {
                 age: person.age,
                 hobbies: person.hobbies
             }
+        }
+
+        if (typeof this.hashArray[location] === 'undefined') {
+            this.hashArray[location] = [{
+                [person.name]: {
+                    age: person.age,
+                    hobbies: person.hobbies
+                }
+            }]
+        } else {
+            this.hashArray[location].push(personHashObject)
         }
     }
 
@@ -48,13 +60,19 @@ class HashTable {
     }
 
     get = (name) => {
-        // @TODO - iterate through array if chained
-        const result = this.hashArray[this.hashFunction(name)]
-        if (!result || Object.keys(result)[0].toLowerCase() !== name.toLowerCase()) {
-            return 'Nothing found'
-        } else {
-            return result
+        const location = this.hashFunction(name)
+        let response = 'nothing found'
+
+        if (typeof this.hashArray[location] !== 'undefined') {
+            for (let i = 0; i < this.hashArray[location].length; i++) {
+                const result = this.hashArray[this.hashFunction(name)][i]
+                if (Object.keys(result)[0].toLowerCase() === name.toLowerCase()) {
+                    return result
+                }
+            }
+
         }
+        return response
     }
 
     dumpTable = () => {
@@ -63,8 +81,9 @@ class HashTable {
 
     hashFunction = (string) => {
         const leftChar = string.charAt(0)
-        // @TODO - error if leftChar is not a letter
-        return this.alphabetHash[leftChar.toLowerCase()]
+        if (leftChar.match(/a-z/)) {
+            return this.alphabetHash[leftChar.toLowerCase()]
+        }
     }
 
 }
@@ -81,8 +100,12 @@ let hashTable = new HashTable()
 
 let seth = new Person('Seth', 36, ['code','music'])
 let ben = new Person('Ben', 32, ['hiking', 'fishing', 'squaredancing'])
+let bob = new Person('Bob', 25, ['gaming', 'hacking'])
 
 hashTable.add(seth)
 hashTable.add(ben)
+hashTable.add(bob)
 
-console.log(hashTable.get('seTh'))
+// hashTable.dumpTable()
+
+console.log(hashTable.get('ben'))
