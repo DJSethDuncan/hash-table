@@ -48,7 +48,13 @@ class HashTable {
     }
 
     get = (name) => {
-
+        // @TODO - iterate through array if chained
+        const result = this.hashArray[this.hashFunction(name)]
+        if (!result || Object.keys(result)[0].toLowerCase() !== name.toLowerCase()) {
+            return 'Nothing found'
+        } else {
+            return result
+        }
     }
 
     dumpTable = () => {
@@ -74,8 +80,9 @@ class Person {
 let hashTable = new HashTable()
 
 let seth = new Person('Seth', 36, ['code','music'])
+let ben = new Person('Ben', 32, ['hiking', 'fishing', 'squaredancing'])
 
-console.log(hashTable.add(seth))
-console.log(hashTable.dumpTable())
-console.log(hashTable.delete('seth'))
-console.log(hashTable.dumpTable())
+hashTable.add(seth)
+hashTable.add(ben)
+
+console.log(hashTable.get('seTh'))
